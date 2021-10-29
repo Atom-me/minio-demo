@@ -1,0 +1,7 @@
+
+
+minio:
+  endpoint: http://10.16.118.230:9000
+  accessKey: admin
+  secretkey: 12345678
+  bucketName: asiatrip
