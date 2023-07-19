@@ -1,7 +1,11 @@
-
-
 minio:
-  endpoint: http://10.16.118.230:9000
-  accessKey: admin
-  secretkey: 12345678
-  bucketName: asiatrip
+  endpoint: http://10.1.39.95:9000
+  accessKey: hL2pqJum98hjDOSu
+  secretkey: 2QVNvNuRi0ysJJ3n8Xtj6zBYIQKHJXC9
+  bucketName: atom-test
+
+#minio:
+#  endpoint: http://47.97.195.178:9250
+#  accessKey: minioadmin
+#  secretkey: minioadmin
+#  bucketName: atom-test
