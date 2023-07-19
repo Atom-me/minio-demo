@@ -66,6 +66,7 @@ public class MinioEventListener implements CommandLineRunner {
         ListenBucketNotificationArgs listenBucketNotificationArgs =
                 ListenBucketNotificationArgs.builder()
                         .bucket("atom-test")
+                        .bucket("test001-atom")
                         .prefix("")
                         .suffix("")
                         .events(supportedEventArr)
