@@ -1,8 +1,8 @@
 package com.atom.minio.controller;
 
 import io.minio.*;
-import io.minio.errors.MinioException;
 import io.minio.messages.Item;
+import org.apache.commons.compress.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,13 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.atom.minio.constant.Constants.DOWNLOAD_DIR;
 
 /**
  * @author Atom
@@ -62,14 +59,7 @@ public class MinioController {
      * @throws Exception
      */
     @GetMapping("/{object}")
-    public void getObject(@PathVariable("object") String object) throws Exception {
-
-//        DownloadObjectArgs downloadObjectArgs = DownloadObjectArgs.builder()
-//                .bucket(bucketName)
-//                .object(object)
-//                .filename(DOWNLOAD_DIR + object)
-////                .overwrite(true)
-//                .build();
+    public void getObject(@PathVariable("object") String object, HttpServletResponse response) throws Exception {
 
         GetObjectArgs getObjectArgs = GetObjectArgs
                 .builder()
@@ -77,7 +67,15 @@ public class MinioController {
                 .object(object)
                 .build();
         GetObjectResponse getObjectResponse = minioClient.getObject(getObjectArgs);
-        LOGGER.info("[{}] is successfully downloaded to [{}]", object, DOWNLOAD_DIR + object);
+
+        // Set the content type and attachment header.
+        response.addHeader("Content-disposition", "attachment;filename=" + object);
+        response.setContentType(URLConnection.guessContentTypeFromName(object));
+
+        // Copy the stream to the response's output stream.
+        IOUtils.copy(getObjectResponse, response.getOutputStream());
+        response.flushBuffer();
+        LOGGER.info("[{}] is successfully downloaded.", object);
 
     }
 
