@@ -32,8 +32,14 @@ public enum HandlerEnum {
             ViewObjectEventHandler.class,
             "对象被查看相关事件");
 
+    /**
+     * 事件集合，多个事件可以使用一个事件处理器
+     */
     private EventType[] eventType;
 
+    /**
+     * 事件对应的处理器
+     */
     private Class<?> handlerClass;
 
     private String desc;
