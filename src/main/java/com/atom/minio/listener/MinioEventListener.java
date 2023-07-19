@@ -37,7 +37,8 @@ public class MinioEventListener implements CommandLineRunner {
         // Exception: A specified event is not supported for notifications.
         // List<EventType> events = Arrays.asList(values());
 
-        List<EventType> events = Arrays.asList(
+// docker pull minio/minio:RELEASE.2023-03-24T21-41-23Z 这个版本支持以下事件：
+        List<EventType> supportedEventList = Arrays.asList(
                 OBJECT_CREATED_ANY,
                 OBJECT_CREATED_PUT,
                 OBJECT_CREATED_POST,
@@ -50,14 +51,16 @@ public class MinioEventListener implements CommandLineRunner {
                 OBJECT_REMOVED_DELETE,
                 OBJECT_REMOVED_DELETED_MARKER_CREATED
                 // Exception: A specified event is not supported for notifications.
-//                REDUCED_REDUNDANCY_LOST_OBJECT
-//                BUCKET_CREATED
-//                BUCKET_REMOVED
-                );
-        String[] eventsStrArr = new String[events.size()];
+                // REDUCED_REDUNDANCY_LOST_OBJECT
+                // BUCKET_CREATED
+                // BUCKET_REMOVED
+        );
 
-        for (int i = 0; i < events.size(); i++) {
-            eventsStrArr[i] = events.get(i).toString();
+
+        String[] supportedEventArr = new String[supportedEventList.size()];
+
+        for (int i = 0; i < supportedEventList.size(); i++) {
+            supportedEventArr[i] = supportedEventList.get(i).toString();
         }
 
         ListenBucketNotificationArgs listenBucketNotificationArgs =
@@ -65,7 +68,7 @@ public class MinioEventListener implements CommandLineRunner {
                         .bucket("atom-test")
                         .prefix("")
                         .suffix("")
-                        .events(eventsStrArr)
+                        .events(supportedEventArr)
                         .build();
 
         try (CloseableIterator<Result<NotificationRecords>> ci = minioClient.listenBucketNotification(listenBucketNotificationArgs)) {
