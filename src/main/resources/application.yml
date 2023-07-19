@@ -1,6 +1,6 @@
 minio:
   endpoint: http://10.1.39.95:9000
   accessKey: hL2pqJum98hjDOSu
-  secretkey: 1234567890-aer
-  bucketName: atom-test
+  secretkey: 2QVNvNuRi0ysJJ3n8Xtj6zBYIQKHJXC9
+  bucketName: test001-atom
 

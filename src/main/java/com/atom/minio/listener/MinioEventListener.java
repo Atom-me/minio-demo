@@ -1,6 +1,5 @@
 package com.atom.minio.listener;
 
-
 import com.atom.minio.handler.EventHandler;
 import com.atom.minio.handler.EventHandlerFactory;
 import io.minio.CloseableIterator;
@@ -66,7 +65,7 @@ public class MinioEventListener implements CommandLineRunner {
         ListenBucketNotificationArgs listenBucketNotificationArgs =
                 ListenBucketNotificationArgs.builder()
                         .bucket("atom-test")
-                        .bucket("test001-atom")
+                        .bucket("test001-atom")//会覆盖"atom-test"的监听，不可同时监听多个bucket
                         .prefix("")
                         .suffix("")
                         .events(supportedEventArr)

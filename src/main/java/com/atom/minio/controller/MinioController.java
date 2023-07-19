@@ -102,6 +102,9 @@ public class MinioController {
 
         minioClient.putObject(args);
 
+        LOGGER.info("[{}] is successfully uploaded.", file.getOriginalFilename());
+
+
     }
 
 
