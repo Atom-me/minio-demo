@@ -55,6 +55,8 @@ public class MinioController {
 
 
     /**
+     * curl --location 'localhost:8080/temp00.png'
+     *
      * @param object
      * @throws Exception
      */
