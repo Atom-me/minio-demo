@@ -5,6 +5,9 @@ import io.minio.MinioClient;
 import io.minio.Result;
 import io.minio.errors.*;
 import io.minio.messages.Item;
+import org.apache.juli.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +27,7 @@ import java.util.List;
 @RequestMapping("/")
 public class MinioController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MinioController.class);
     @Resource
     private MinioClient minioClient;
 
@@ -37,7 +41,7 @@ public class MinioController {
         List<Object> items = new ArrayList<>();
         for (Result<Item> result : results) {
             Item item = result.get();
-            System.err.println(item.lastModified() + "\n" + item.size() + "\n" + item.objectName());
+            LOGGER.info("桶：[{}],  对象名称：[{}], 对象更新时间：[{}], 对象大小(字节)[{}] ", bucketName, item.objectName(), item.lastModified(), item.size());
             items.add(item.objectName());
         }
         return items;

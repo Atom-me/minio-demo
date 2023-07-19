@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-public class DownloadObject {
+public class DownloadObjectDemo {
     /**
      * MinioClient.getObject() example.
      */
@@ -33,8 +33,8 @@ public class DownloadObject {
             // Create a minioClient with the MinIO server playground, its access key and secret key.
             MinioClient minioClient =
                     MinioClient.builder()
-                            .endpoint("http://10.16.118.230:9000")
-                            .credentials("admin", "12345678")
+                            .endpoint("http://10.1.39.95:9000")
+                            .credentials("hL2pqJum98hjDOSu", "2QVNvNuRi0ysJJ3n8Xtj6zBYIQKHJXC9")
                             .build();
 
             /* Amazon S3: */
@@ -45,13 +45,13 @@ public class DownloadObject {
             //         .build();
 
             // Download 'my-objectname' from 'my-bucketname' to 'my-filename'
-            String bucketName = "asiatrip";
+            String bucketName = "atom-test";
 
             minioClient.downloadObject(
                     DownloadObjectArgs.builder()
                             .bucket(bucketName)
-                            .object("atom_index.html")
-                            .filename("/Users/atom/test/a.html")
+                            .object("hello.txt")
+                            .filename("/Users/atom/a.html")
                             .build());
             System.out.println("my-objectname is successfully downloaded to my-filename");
 
