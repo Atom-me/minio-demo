@@ -108,4 +108,38 @@ public class MinioController {
     }
 
 
+    /**
+     * 获取对象元数据信息,没有createdTime方法。
+     * 可以使用lastModified()方法获取对象的最后修改时间，因为对象的创建时间通常与最后修改时间相同。
+     *
+     * @param object
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("stat/{object}")
+    public String statObject(@PathVariable("object") String object) throws Exception {
+        StatObjectArgs statObjectArgs = StatObjectArgs.builder()
+                .bucket(bucketName)
+                .object(object)
+                .build();
+        StatObjectResponse statObjectResponse = minioClient.statObject(statObjectArgs);
+        LOGGER.info("============== [{}] object stat ==============", statObjectResponse.object());
+        LOGGER.info("bucket : [{}]", statObjectResponse.bucket());
+        LOGGER.info("object : [{}]", statObjectResponse.object());
+        LOGGER.info("contentType : [{}]", statObjectResponse.contentType());
+        LOGGER.info("etag : [{}]", statObjectResponse.etag());
+        LOGGER.info("deleteMarker : [{}]", statObjectResponse.deleteMarker());
+        LOGGER.info("lastModified : [{}]", statObjectResponse.lastModified());
+        LOGGER.info("legalHold : [{}]", statObjectResponse.legalHold());
+        LOGGER.info("retentionMode : [{}]", statObjectResponse.retentionMode());
+        LOGGER.info("retentionRetainUntilDate : [{}]", statObjectResponse.retentionRetainUntilDate());
+        LOGGER.info("size : [{}]", statObjectResponse.size());
+        LOGGER.info("userMetadata : [{}]", statObjectResponse.userMetadata());
+        LOGGER.info("versionId : [{}]", statObjectResponse.versionId());
+        LOGGER.info("headers : [{}]", statObjectResponse.headers());
+        LOGGER.info("region : [{}]", statObjectResponse.region());
+        return statObjectResponse.toString();
+    }
+
+
 }
