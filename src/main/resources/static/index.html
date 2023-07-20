@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>Virus Scan</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            padding: 30px;
+            border: 2px solid #007bff;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button[type="submit"] {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #result-ok, #result-error {
+            font-size: 20px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #result-ok {
+            color: #007bff; /* Blue color */
+        }
+
+        #result-error {
+            color: #dc3545; /* Red color */
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $("#file-upload-form").on("submit", function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: "/av/upload",
+                    type: "POST",
+                    data: new FormData(this),
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function (res) {
+                        showResult(res);
+                    },
+                    error: function (err) {
+                        alert(err);
+                    }
+                });
+            });
+
+            function showResult(res){
+                $("#result-ok").html("");
+                $("#result-error").html("");
+
+                if(res.status == "PASSED"){
+                    $("#result-ok").html("<h2>No threats found.</h2>");
+
+                } else if (res.status == "FAILED") {
+                    $("#result-error").html("<h2>Virus found.</h2><h3>Detected: <b>"+ res.signature + "</b></h3>");
+                } else {
+                    $("#result-error").html("<h3>Something went wrong.</h3><h3>Message: <b>"+ res.result + "</b></h3>");
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>Virus Scan</h1>
+    <form id="file-upload-form">
+        <label for="file-upload-input">Select file to upload:</label>
+        <input type="file" id="file-upload-input" name="file">
+        <button type="submit">Upload</button>
+    </form>
+    <div id="result-ok"></div>
+    <div id="result-error"></div>
+</div>
+</body>
+</html>

@@ -4,3 +4,10 @@ minio:
   secretkey: 2QVNvNuRi0ysJJ3n8Xtj6zBYIQKHJXC9
   bucketName: test001-atom
 
+
+clamav:
+  host: 192.168.88.202
+# host: 39.98.119.132
+  port: 3310
+  readTimeout: 20000
+  connectionTimeout: 2000

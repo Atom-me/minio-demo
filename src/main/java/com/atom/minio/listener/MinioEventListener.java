@@ -23,7 +23,6 @@ import static io.minio.messages.EventType.*;
 @Component
 public class MinioEventListener implements CommandLineRunner {
 
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MinioEventListener.class);
 
     @Autowired

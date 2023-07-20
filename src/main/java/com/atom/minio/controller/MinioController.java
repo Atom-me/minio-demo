@@ -19,7 +19,7 @@ import java.util.List;
  * @author Atom
  */
 @RestController
-@RequestMapping("/")
+@RequestMapping("/minio")
 public class MinioController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MinioController.class);
@@ -31,7 +31,7 @@ public class MinioController {
 
 
     /**
-     * curl --location 'localhost:8080/listObjects'
+     * curl --location 'localhost:8080/minio/listObjects'
      *
      * @return
      * @throws Exception
@@ -55,7 +55,7 @@ public class MinioController {
 
 
     /**
-     * curl --location 'localhost:8080/temp00.png'
+     * curl --location 'localhost:8080/minio/temp00.png'
      *
      * @param object
      * @throws Exception
@@ -83,7 +83,7 @@ public class MinioController {
 
 
     /**
-     * curl --location 'localhost:8080' \
+     * curl --location 'localhost:8080/minio' \
      * --header 'Content-Type: multipart/form-data;' \
      * --form 'file111=@"/Users/atom/Desktop/temp00.png"'
      *

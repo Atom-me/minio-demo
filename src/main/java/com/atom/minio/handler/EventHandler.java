@@ -6,6 +6,11 @@ package com.atom.minio.handler;
  */
 public interface EventHandler<Event> {
 
+    /**
+     * handle event
+     *
+     * @param event
+     */
     void handle(Event event);
 
 }
