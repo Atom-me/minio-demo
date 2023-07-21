@@ -1,6 +1,8 @@
 package com.atom.minio.controller;
 
 import io.minio.*;
+import io.minio.errors.ErrorResponseException;
+import io.minio.messages.ErrorResponse;
 import io.minio.messages.Item;
 import org.apache.commons.compress.utils.IOUtils;
 import org.slf4j.Logger;
@@ -145,7 +147,7 @@ public class MinioController {
 
 
     /**
-     * rename object
+     * 重命名对象
      *
      * @param srcObject
      * @param destObject
@@ -181,6 +183,43 @@ public class MinioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Rename failed~~~");
         }
 
+    }
+
+
+    /**
+     * 删除对象
+     *
+     * @param object
+     * @return
+     */
+    @DeleteMapping("/remove/{object}")
+    public ResponseEntity<String> removeObject(@PathVariable("object") String object) {
+        try {
+            // 检查对象是否存在
+            minioClient.statObject(StatObjectArgs.builder().bucket(bucketName).object(object).build());
+            // 如果没有跑出异常，说明存在
+            minioClient.removeObject(RemoveObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(object)
+                    .build());
+            LOGGER.info("[{}] remove successfully", object);
+            return ResponseEntity.ok(object + " removed successfully");
+        } catch (ErrorResponseException e) {
+            // 捕获ErrorResponseException，提取异常信息
+            ErrorResponse errorResponse = e.errorResponse();
+            String errorMessage = errorResponse != null ? errorResponse.message() : "Unknown error";
+            LOGGER.error("An error occurred during removing object '{}': {}", object, errorMessage);
+
+            // 如果不存在，minio server会返回 404
+            if (e.response().code() == HttpStatus.NOT_FOUND.value()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(object + " does not exist in the bucket");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Remove failed: " + errorMessage);
+            }
+        } catch (Exception e) {
+            LOGGER.error("An unexpected error occurred during removing object '{}':", object, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Remove failed: Unexpected error");
+        }
     }
 
 
