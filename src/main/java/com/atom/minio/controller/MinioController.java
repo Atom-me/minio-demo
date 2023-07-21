@@ -145,6 +145,8 @@ public class MinioController {
 
 
     /**
+     * rename object
+     *
      * @param srcObject
      * @param destObject
      * @return
@@ -180,5 +182,6 @@ public class MinioController {
         }
 
     }
+
 
 }
