@@ -63,8 +63,7 @@ public class MinioEventListener implements CommandLineRunner {
 
         ListenBucketNotificationArgs listenBucketNotificationArgs =
                 ListenBucketNotificationArgs.builder()
-                        .bucket("atom-test")
-                        .bucket("test001-atom")//会覆盖"atom-test"的监听，不可同时监听多个bucket
+                        .bucket("atom-test") // 一个ListenBucketNotificationArgs不可同时监听多个bucket
                         .prefix("")
                         .suffix("")
                         .events(supportedEventArr)

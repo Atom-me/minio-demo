@@ -6,6 +6,8 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +39,7 @@ public class MinioController {
      * @throws Exception
      */
     @GetMapping("/listObjects")
-    public List<Object> list() throws Exception {
+    public ResponseEntity<List<Object>> list() throws Exception {
         Iterable<Result<Item>> results = minioClient.listObjects(ListObjectsArgs
                 .builder()
                 .bucket(bucketName)
@@ -50,7 +52,7 @@ public class MinioController {
             LOGGER.info("桶：[{}],  对象名称：[{}], 对象是否是目录：[{}], 对象大小(字节)[{}] ", bucketName, item.objectName(), item.isDir(), item.size());
             items.add(item.objectName());
         }
-        return items;
+        return ResponseEntity.ok(items);
     }
 
 
@@ -117,7 +119,7 @@ public class MinioController {
      * @throws Exception
      */
     @GetMapping("stat/{object}")
-    public String statObject(@PathVariable("object") String object) throws Exception {
+    public ResponseEntity<String> statObject(@PathVariable("object") String object) throws Exception {
         StatObjectArgs statObjectArgs = StatObjectArgs.builder()
                 .bucket(bucketName)
                 .object(object)
@@ -138,8 +140,45 @@ public class MinioController {
         LOGGER.info("versionId : [{}]", statObjectResponse.versionId());
         LOGGER.info("headers : [{}]", statObjectResponse.headers());
         LOGGER.info("region : [{}]", statObjectResponse.region());
-        return statObjectResponse.toString();
+        return ResponseEntity.ok(statObjectResponse.toString());
     }
 
+
+    /**
+     * @param srcObject
+     * @param destObject
+     * @return
+     */
+    @PutMapping("/rename/{srcObject}/{destObject}")
+    public ResponseEntity<String> renameObject(@PathVariable("srcObject") String srcObject, @PathVariable("destObject") String destObject) {
+
+        try {
+            // Perform the object renaming by copying the source object to the destination object in the same bucket.
+            minioClient.copyObject(
+                    CopyObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(destObject)
+                            .source(
+                                    CopySource.builder()
+                                            .bucket(bucketName)
+                                            .object(srcObject)
+                                            .build())
+                            .build());
+            LOGGER.info("[{}]/[{}] copied to [{}]/[{}] successfully", bucketName, srcObject, bucketName, destObject);
+
+            // Delete the source object after it has been successfully copied.
+            minioClient.removeObject(RemoveObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(srcObject)
+                    .build());
+            LOGGER.info("[{}] renamed to [{}] successfully", srcObject, destObject);
+            return ResponseEntity.ok("Rename successfully!!");
+
+        } catch (Exception e) {
+            LOGGER.error("An error occurred during renaming:", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Rename failed~~~");
+        }
+
+    }
 
 }
