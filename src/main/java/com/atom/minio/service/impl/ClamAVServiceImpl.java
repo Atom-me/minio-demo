@@ -56,12 +56,13 @@ public class ClamAVServiceImpl implements ClamAVService {
 
 
     @Override
-    public VirusScanResult scan(InputStream inputStream) throws IOException {
+    public VirusScanResult scanStream(InputStream inputStream) throws IOException {
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(host, port), connectionTimeout);
             socket.setSoTimeout(readTimeout);
 
             try (OutputStream outStream = new BufferedOutputStream(socket.getOutputStream())) {
+                // handshake
                 outStream.write(INSTREAM.getBytes(StandardCharsets.UTF_8));
                 outStream.flush();
 
@@ -80,6 +81,7 @@ public class ClamAVServiceImpl implements ClamAVService {
                         }
                         read = inputStream.read(buffer);
                     }
+
                     outStream.write(new byte[]{0, 0, 0, 0});
                     outStream.flush();
                     String result = new String(IOUtils.toByteArray(inStream)).trim();

@@ -18,11 +18,11 @@ public interface ClamAVService {
     boolean ping();
 
     /**
-     * scan virus
+     * connect to ClamAV on ip:3310 using TCP and send file data in the input stream format
      *
      * @param inputStream
      * @return
      * @throws IOException
      */
-    VirusScanResult scan(InputStream inputStream) throws IOException;
+    VirusScanResult scanStream(InputStream inputStream) throws IOException;
 }

@@ -29,7 +29,7 @@ public class VirusScanServiceImpl implements VirusScanService {
 
         try (InputStream destStream = file.getInputStream()) {
             if (clamAVService.ping()) {
-                scanResult = clamAVService.scan(destStream);
+                scanResult = clamAVService.scanStream(destStream);
             } else {
                 LOGGER.error("ClamD did not respond to ping request.");
                 scanResult = new VirusScanResult(VirusScanStatus.CONNECTION_FAILED, "ClamAV did not respond to ping request.");
