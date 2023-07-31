@@ -62,7 +62,7 @@ bash-5.1# /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:
 mc mb test_minio/my-bucket
 ```
 
-### 添加事件
+### 在存储桶上开启事件通知
 
 #### 查看对应ARN信息
 
