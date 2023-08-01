@@ -55,15 +55,19 @@ public class MinioEventListener implements CommandLineRunner {
         );
 
 
-        String[] supportedEventArr = new String[supportedEventList.size()];
+        listenToBucketEvents("atom-test", supportedEventList);
+        listenToBucketEvents("atom-test2", supportedEventList);
 
-        for (int i = 0; i < supportedEventList.size(); i++) {
-            supportedEventArr[i] = supportedEventList.get(i).toString();
-        }
+    }
+
+    private void listenToBucketEvents(String bucketName, List<EventType> supportedEventList) {
+        String[] supportedEventArr = supportedEventList.stream()
+                .map(EventType::toString)
+                .toArray(String[]::new);
 
         ListenBucketNotificationArgs listenBucketNotificationArgs =
                 ListenBucketNotificationArgs.builder()
-                        .bucket("atom-test") // 一个ListenBucketNotificationArgs不可同时监听多个bucket
+                        .bucket(bucketName)
                         .prefix("")
                         .suffix("")
                         .events(supportedEventArr)
@@ -73,7 +77,7 @@ public class MinioEventListener implements CommandLineRunner {
             while (ci.hasNext()) {
                 NotificationRecords records = ci.next().get();
                 for (Event event : records.events()) {
-                    LOGGER.info("start process event:::[{}]", event.eventType());
+                    LOGGER.info("Start processing event:::[{}]", event.eventType());
                     EventHandler handler = eventHandlerFactory.getHandler(event.eventType());
                     handler.handle(event);
                 }
