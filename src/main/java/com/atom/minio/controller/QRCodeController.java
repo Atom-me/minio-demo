@@ -37,26 +37,19 @@ public class QRCodeController {
      * 华为技术文档：扫描分享文档
      * GET :
      * http://localhost:8080/qrcode/getQRCode?content=https://support.huaweicloud.com/sdkreference-mrs/mrs_11_000001.html
-     *
+     * <p>
      * 根据 content 生成二维码
      */
     @GetMapping(value = "/getQRCode")
     public void getQRCode(HttpServletResponse response,
                           @RequestParam("content") String content,
-                          @RequestParam(value = "logoUrl", required = false) String logoUrl) throws Exception {
-        ServletOutputStream stream = null;
-        try {
-            stream = response.getOutputStream();
+                          @RequestParam(value = "logoUrl", required = false) String logoUrl) {
+        try (ServletOutputStream stream = response.getOutputStream()) {
             QRCodeUtil.getQRCode(content, logoUrl, stream);
+            stream.flush();
         } catch (Exception e) {
-            e.getStackTrace();
-        } finally {
-            if (stream != null) {
-                stream.flush();
-                stream.close();
-            }
+            e.printStackTrace();
         }
     }
-
 
 }
