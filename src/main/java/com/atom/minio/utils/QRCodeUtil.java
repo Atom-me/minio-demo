@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.util.encoders.Base64;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
@@ -47,7 +46,7 @@ public class QRCodeUtil {
     private static final Integer LOGO_HEIGHT = 22;
 
     /**
-     * 图片格式
+     * 二维码图片格式
      */
     private static final String IMAGE_FORMAT = "png";
     private static final String CHARSET = "utf-8";
@@ -59,7 +58,7 @@ public class QRCodeUtil {
     /**
      * 生成二维码，使用默认尺寸
      *
-     * @param content 内容
+     * @param content 二维码的内容
      * @return
      */
     public String getBase64QRCode(String content) {
@@ -98,7 +97,7 @@ public class QRCodeUtil {
         try {
             ImageIO.write(bufferedImage, IMAGE_FORMAT, os);
         } catch (IOException e) {
-            log.error("[生成二维码，错误{}]", e);
+            log.error("[生成二维码，错误 {}]", e);
         }
         // 转出即可直接使用
         return String.format(BASE64_IMAGE, Base64.encode(os.toByteArray()));
@@ -118,13 +117,12 @@ public class QRCodeUtil {
      */
     private BufferedImage crateQRCode(String content, Integer width, Integer height, String logoUrl, Integer logoWidth, Integer logoHeight) {
         if (StringUtils.isNotBlank(content)) {
-            ServletOutputStream stream = null;
             HashMap<EncodeHintType, Comparable> hints = new HashMap<>(4);
             // 指定字符编码为utf-8
             hints.put(EncodeHintType.CHARACTER_SET, CHARSET);
             // 指定二维码的纠错等级为中级
             hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-            // 设置图片的边距
+            // 设置二维码与图片的边距
             hints.put(EncodeHintType.MARGIN, 2);
             try {
                 QRCodeWriter writer = new QRCodeWriter();
@@ -141,15 +139,6 @@ public class QRCodeUtil {
                 return bufferedImage;
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                if (stream != null) {
-                    try {
-                        stream.flush();
-                        stream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         }
         return null;
