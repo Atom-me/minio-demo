@@ -29,11 +29,11 @@ import java.util.HashMap;
 public class QRCodeUtil {
 
     /**
-     * 默认宽度
+     * 二维码默认宽度
      */
     private static final Integer WIDTH = 140;
     /**
-     * 默认高度
+     * 二维码默认高度
      */
     private static final Integer HEIGHT = 140;
 
