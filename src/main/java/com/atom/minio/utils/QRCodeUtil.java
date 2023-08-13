@@ -100,7 +100,8 @@ public class QRCodeUtil {
             log.error("[生成二维码，错误 {}]", e);
         }
         // 转出即可直接使用
-        return String.format(BASE64_IMAGE, Base64.encode(os.toByteArray()));
+//        return String.format(BASE64_IMAGE, Base64.encode(os.toByteArray()));
+        return Base64.toBase64String(os.toByteArray());
     }
 
 

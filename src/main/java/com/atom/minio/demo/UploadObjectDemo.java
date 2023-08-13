@@ -31,7 +31,6 @@ public class UploadObjectDemo {
                 System.out.println("Bucket 'atom-test' already exists.");
             }
 
-            // Upload '/Users/atom/testDir/nginx_docker_test/index.html' as object name 'atom_index.html' to bucket 'asiatrip'.
             minioClient.uploadObject(
                     UploadObjectArgs.builder()
                             .bucket("atom-test")

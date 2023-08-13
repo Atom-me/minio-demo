@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR Code API调用示例</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .column {
+            flex-basis: 45%;
+        }
+
+        .result {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .result h2 {
+            margin-top: 0;
+        }
+
+        .result textarea {
+            width: 100%;
+            height: 100px;
+            resize: none;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .result img {
+            max-width: 300px;
+            max-height: 300px;
+            display: block;
+            margin: 0 auto;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<h1>QR Code</h1>
+<div class="container">
+    <div class="column">
+        <div class="result">
+            <h2>getQRCodeBase64结果：</h2>
+            <img id="qrcodeBase64Result" alt="QR Code">
+        </div>
+        <button onclick="getQRCodeBase64()">调用getQRCodeBase64</button>
+    </div>
+    <div class="column">
+        <div class="result">
+            <h2>getQRCode结果：</h2>
+            <img id="qrcodeResult" alt="QR Code">
+        </div>
+        <button onclick="getQRCode()">调用getQRCode</button>
+    </div>
+</div>
+
+<script>
+    function getQRCodeBase64() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://localhost:8080/qrcode/getQRCodeBase64?content=https://support.huaweicloud.com/sdkreference-mrs/mrs_11_000001.html", true);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var base64 = xhr.responseText;
+                var img = document.getElementById("qrcodeBase64Result");
+                img.src = "data:image/png;base64," + base64;
+            }
+        };
+
+        xhr.send();
+    }
+
+    function getQRCode() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://localhost:8080/qrcode/getQRCode?content=https://support.huaweicloud.com/sdkreference-mrs/mrs_11_000001.html", true);
+
+        xhr.responseType = "blob";
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var blob = xhr.response;
+                var url = URL.createObjectURL(blob);
+                var img = document.getElementById("qrcodeResult");
+                img.src = url;
+            }
+        };
+
+        xhr.send();
+    }
+</script>
+</body>
+</html>
