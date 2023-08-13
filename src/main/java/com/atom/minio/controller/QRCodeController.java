@@ -1,7 +1,6 @@
 package com.atom.minio.controller;
 
 import com.atom.minio.utils.QRCodeUtil;
-import com.atom.minio.utils.R;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,11 +25,11 @@ public class QRCodeController {
      * @return
      */
     @GetMapping("/getQRCodeBase64")
-    public R getQRCode(@RequestParam("content") String content,
-                       @RequestParam(value = "logoUrl", required = false) String logoUrl,
-                       @RequestParam(value = "width", required = false) Integer width,
-                       @RequestParam(value = "height", required = false) Integer height) {
-        return R.ok(QRCodeUtil.getBase64QRCode(content, logoUrl));
+    public String getQRCode(@RequestParam("content") String content,
+                            @RequestParam(value = "logoUrl", required = false) String logoUrl,
+                            @RequestParam(value = "width", required = false) Integer width,
+                            @RequestParam(value = "height", required = false) Integer height) {
+        return QRCodeUtil.getBase64QRCode(content, logoUrl);
     }
 
     /**
