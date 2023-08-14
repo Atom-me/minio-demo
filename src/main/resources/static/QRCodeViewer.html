@@ -80,7 +80,7 @@
 <script>
     function getQRCodeBase64() {
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://localhost:8080/qrcode/getQRCodeBase64?content=https://support.huaweicloud.com/sdkreference-mrs/mrs_11_000001.html", true);
+        xhr.open("GET", "http://localhost:8080/qrcode/getQRCodeBase64?content=https://help.aliyun.com/zh/ecs/product-overview/what-is-ecs?spm=a2c4g.11174283.0.0.1313300cxGYPBd", true);
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
