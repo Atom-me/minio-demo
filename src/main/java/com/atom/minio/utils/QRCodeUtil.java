@@ -28,11 +28,11 @@ import java.util.HashMap;
 public class QRCodeUtil {
 
     /**
-     * 二维码默认宽度
+     * 二维码默认宽度,正方形的，长高一致
      */
     private static final Integer DEFAULT_WIDTH = 440;
     /**
-     * 二维码默认高度
+     * 二维码默认高度,正方形的，长高一致
      */
     private static final Integer DEFAULT_HEIGHT = 440;
 
@@ -49,7 +49,10 @@ public class QRCodeUtil {
      * 二维码图片格式
      */
     private static final String IMAGE_FORMAT = "png";
-    private static final String CHARSET = "utf-8";
+    /**
+     * 设置字符编码类型
+     */
+    private static final String CHARSET = "UTF-8";
 
     /**
      * 二维码与图片的边距
@@ -185,11 +188,15 @@ public class QRCodeUtil {
         BufferedImage logoImage = ImageIO.read(url);
         // 插入LOGO
         Graphics2D graph = qrImage.createGraphics();
+        // 计算图片放置位置，放置在中间
         int x = (width - logoWidth) / 2;
         int y = (height - logoHeight) / 2;
         graph.drawImage(logoImage, x, y, logoWidth, logoHeight, null);
         Shape shape = new RoundRectangle2D.Float(x, y, logoWidth, logoHeight, 6, 6);
+        // 边框宽度
         graph.setStroke(new BasicStroke(3f));
+        // 边框颜色
+        graph.setColor(Color.WHITE);
         graph.draw(shape);
         graph.dispose();
     }

@@ -20,7 +20,8 @@
         }
 
         .column {
-            flex-basis: 45%;
+            flex-basis: 30%;
+            padding: 10px;
         }
 
         .result {
@@ -36,11 +37,16 @@
         }
 
         .result .placeholder-image {
-            max-width: 300px;
+            max-width: 100%;
             max-height: 300px;
             display: block;
             margin: 0 auto;
             background-color: #f1f1f1;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 10px;
         }
 
         button {
@@ -66,14 +72,29 @@
             <h2>getQRCodeBase64结果：</h2>
             <img id="qrcodeBase64Result" class="placeholder-image" alt="QR Code" src="">
         </div>
-        <button onclick="getQRCodeBase64()">调用getQRCodeBase64</button>
+        <div class="button-container">
+            <button onclick="getQRCodeBase64()">调用getQRCodeBase64</button>
+        </div>
     </div>
+
     <div class="column">
         <div class="result">
             <h2>getQRCode结果：</h2>
             <img id="qrcodeResult" class="placeholder-image" alt="QR Code">
         </div>
-        <button onclick="getQRCode()">调用getQRCode</button>
+        <div class="button-container">
+            <button onclick="getQRCode()">调用getQRCode</button>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="result">
+            <h2>generate-qr结果：</h2>
+            <img id="generateQrResult" class="placeholder-image" alt="QR Code">
+        </div>
+        <div class="button-container">
+            <button onclick="generateQRCode()">调用generate-qr</button>
+        </div>
     </div>
 </div>
 
@@ -96,6 +117,18 @@
                 var blob = response.data;
                 var url = URL.createObjectURL(blob);
                 document.getElementById("qrcodeResult").src = url;
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
+    }
+
+    function generateQRCode() {
+        axios.get("http://localhost:8080/qrcode/generate-qr?qrText=atom", { responseType: "blob" })
+            .then(function (response) {
+                var blob = response.data;
+                var url = URL.createObjectURL(blob);
+                document.getElementById("generateQrResult").src = url;
             })
             .catch(function (error) {
                 console.error(error);

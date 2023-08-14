@@ -1,6 +1,11 @@
 package com.atom.minio.controller;
 
 import com.atom.minio.utils.QRCodeUtil;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -8,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 
 /**
  * @author Atom
@@ -54,6 +60,26 @@ public class QRCodeController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    /**
+     * http://localhost:8080/qrcode/generate-qr?qrText=atom
+     * <p>
+     * 直接返回 BufferedImage,
+     * 配置BufferedImageHttpMessageConverter
+     *
+     * @param qrText
+     * @return
+     * @throws Exception
+     */
+    @GetMapping(value = "/generate-qr", produces = MediaType.IMAGE_PNG_VALUE)
+    public BufferedImage generateQRCodeImage(@RequestParam String qrText) throws Exception {
+
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(qrText, BarcodeFormat.QR_CODE, 250, 250);
+
+        return MatrixToImageWriter.toBufferedImage(bitMatrix);
     }
 
 }
