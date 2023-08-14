@@ -18,6 +18,11 @@ public class QRCodeController {
 
     /**
      * 根据 content 生成二维码
+     * <p>
+     * 阿里云技术文档：扫码分享
+     * <p>
+     * GET
+     * http://localhost:8080/qrcode/getQRCodeBase64?content=https://help.aliyun.com/zh/ecs/product-overview/what-is-ecs?spm=a2c4g.11174283.0.0.1313300cxGYPBd
      *
      * @param content
      * @param width
