@@ -51,12 +51,26 @@ public class QRCodeUtil {
     private static final String IMAGE_FORMAT = "png";
     private static final String CHARSET = "utf-8";
 
+    /**
+     * 二维码与图片的边距
+     */
     private static final int MARGIN_SIZE = 2;
+
+    /**
+     * FRONT_COLOR：二维码前景色，0x000000 表示黑色
+     */
+    private static final int FRONT_COLOR = 0xFF000000;
+
+    /**
+     * BACKGROUND_COLOR：二维码背景色， 0xFFFFFF 表示白色
+     */
+    private static final int BACKGROUND_COLOR = 0xFFFFFFFF;
 
     /**
      * 原生转码前面没有 data:image/png;base64 这些字段，返回给前端是无法被解析
      */
     private static final String BASE64_IMAGE = "data:image/png;base64,%s";
+
 
     /**
      * 生成二维码，使用默认尺寸
@@ -139,7 +153,7 @@ public class QRCodeUtil {
             BufferedImage qrImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
-                    qrImage.setRGB(x, y, bitMatrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
+                    qrImage.setRGB(x, y, bitMatrix.get(x, y) ? FRONT_COLOR : BACKGROUND_COLOR);
                 }
             }
 
@@ -157,7 +171,7 @@ public class QRCodeUtil {
     /**
      * 二维码插入logo
      *
-     * @param qrImage     二维码
+     * @param qrImage    二维码
      * @param width      二维码宽度
      * @param height     二维码高度
      * @param logoUrl    logo 在线地址
