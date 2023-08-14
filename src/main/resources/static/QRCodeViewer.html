@@ -91,7 +91,7 @@
     }
 
     function getQRCode() {
-        axios.get("http://localhost:8080/qrcode/getQRCode?content=https://support.huaweicloud.com/sdkreference-mrs/mrs_11_000001.html", { responseType: "blob" })
+        axios.get("http://localhost:8080/qrcode/getQRCode?content=https://support.huaweicloud.com/sdkreference-mrs/mrs_11_000001.html&logoUrl=https://img.ixintu.com/download/jpg/201912/c38f5b7290a8c06d7b2ef89717f09432.jpg!con", { responseType: "blob" })
             .then(function (response) {
                 var blob = response.data;
                 var url = URL.createObjectURL(blob);

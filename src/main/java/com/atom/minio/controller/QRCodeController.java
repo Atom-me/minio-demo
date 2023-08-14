@@ -40,7 +40,7 @@ public class QRCodeController {
     /**
      * 华为技术文档：扫描分享文档
      * GET :
-     * http://localhost:8080/qrcode/getQRCode?content=https://support.huaweicloud.com/sdkreference-mrs/mrs_11_000001.html
+     * http://localhost:8080/qrcode/getQRCode?content=https://support.huaweicloud.com/sdkreference-mrs/mrs_11_000001.html&logoUrl=https://img.ixintu.com/download/jpg/201912/c38f5b7290a8c06d7b2ef89717f09432.jpg!con
      * <p>
      * 根据 content 生成二维码
      */

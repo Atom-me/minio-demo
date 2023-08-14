@@ -39,11 +39,11 @@ public class QRCodeUtil {
     /**
      * LOGO 默认宽度
      */
-    private static final Integer DEFAULT_LOGO_WIDTH = 22;
+    private static final Integer DEFAULT_LOGO_WIDTH = 120;
     /**
      * LOGO 默认高度
      */
-    private static final Integer DEFAULT_LOGO_HEIGHT = 22;
+    private static final Integer DEFAULT_LOGO_HEIGHT = 120;
 
     /**
      * 二维码图片格式
