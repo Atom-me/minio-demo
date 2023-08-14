@@ -77,36 +77,29 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     function getQRCodeBase64() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://localhost:8080/qrcode/getQRCodeBase64?content=https://help.aliyun.com/zh/ecs/product-overview/what-is-ecs?spm=a2c4g.11174283.0.0.1313300cxGYPBd", true);
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var base64 = xhr.responseText;
+        axios.get("http://localhost:8080/qrcode/getQRCodeBase64?content=https://help.aliyun.com/zh/ecs/product-overview/what-is-ecs?spm=a2c4g.11174283.0.0.1313300cxGYPBd")
+            .then(function (response) {
+                var base64 = response.data;
                 document.getElementById("qrcodeBase64Result").src = "data:image/png;base64," + base64;
-            }
-        };
-
-        xhr.send();
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
     }
 
     function getQRCode() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://localhost:8080/qrcode/getQRCode?content=https://support.huaweicloud.com/sdkreference-mrs/mrs_11_000001.html", true);
-
-        xhr.responseType = "blob";
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var blob = xhr.response;
+        axios.get("http://localhost:8080/qrcode/getQRCode?content=https://support.huaweicloud.com/sdkreference-mrs/mrs_11_000001.html", { responseType: "blob" })
+            .then(function (response) {
+                var blob = response.data;
                 var url = URL.createObjectURL(blob);
                 document.getElementById("qrcodeResult").src = url;
-            }
-        };
-
-        xhr.send();
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
     }
 </script>
 </body>
