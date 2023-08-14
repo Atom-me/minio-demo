@@ -167,7 +167,8 @@ public class QRCodeUtil {
      */
     private void addLogo(BufferedImage qrImage, Integer width, Integer height, String logoUrl, Integer logoWidth, Integer logoHeight) throws Exception {
         // logo 源可为 File/InputStream/URL
-        Image logoImage = ImageIO.read(new URL(logoUrl));
+        URL url = new URL(logoUrl);
+        BufferedImage logoImage = ImageIO.read(url);
         // 插入LOGO
         Graphics2D graph = qrImage.createGraphics();
         int x = (width - logoWidth) / 2;
