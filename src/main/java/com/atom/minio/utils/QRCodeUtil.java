@@ -30,11 +30,11 @@ public class QRCodeUtil {
     /**
      * 二维码默认宽度
      */
-    private static final Integer DEFAULT_WIDTH = 140;
+    private static final Integer DEFAULT_WIDTH = 440;
     /**
      * 二维码默认高度
      */
-    private static final Integer DEFAULT_HEIGHT = 140;
+    private static final Integer DEFAULT_HEIGHT = 440;
 
     /**
      * LOGO 默认宽度
