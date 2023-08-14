@@ -30,26 +30,29 @@ public class QRCodeUtil {
     /**
      * 二维码默认宽度
      */
-    private static final Integer WIDTH = 140;
+    private static final Integer DEFAULT_WIDTH = 140;
     /**
      * 二维码默认高度
      */
-    private static final Integer HEIGHT = 140;
+    private static final Integer DEFAULT_HEIGHT = 140;
 
     /**
      * LOGO 默认宽度
      */
-    private static final Integer LOGO_WIDTH = 22;
+    private static final Integer DEFAULT_LOGO_WIDTH = 22;
     /**
      * LOGO 默认高度
      */
-    private static final Integer LOGO_HEIGHT = 22;
+    private static final Integer DEFAULT_LOGO_HEIGHT = 22;
 
     /**
      * 二维码图片格式
      */
     private static final String IMAGE_FORMAT = "png";
     private static final String CHARSET = "utf-8";
+
+    private static final int MARGIN_SIZE = 2;
+
     /**
      * 原生转码前面没有 data:image/png;base64 这些字段，返回给前端是无法被解析
      */
@@ -62,7 +65,7 @@ public class QRCodeUtil {
      * @return
      */
     public String getBase64QRCode(String content) {
-        return getBase64Image(content, WIDTH, HEIGHT, null, null, null);
+        return getBase64Image(content, DEFAULT_WIDTH, DEFAULT_HEIGHT, null, null, null);
     }
 
     /**
@@ -73,7 +76,7 @@ public class QRCodeUtil {
      * @return
      */
     public String getBase64QRCode(String content, String logoUrl) {
-        return getBase64Image(content, WIDTH, HEIGHT, logoUrl, LOGO_WIDTH, LOGO_HEIGHT);
+        return getBase64Image(content, DEFAULT_WIDTH, DEFAULT_HEIGHT, logoUrl, DEFAULT_LOGO_WIDTH, DEFAULT_LOGO_HEIGHT);
     }
 
     /**
@@ -117,38 +120,44 @@ public class QRCodeUtil {
      * @return
      */
     private BufferedImage crateQRCode(String content, Integer width, Integer height, String logoUrl, Integer logoWidth, Integer logoHeight) {
-        if (StringUtils.isNotBlank(content)) {
-            HashMap<EncodeHintType, Comparable> hints = new HashMap<>(4);
-            // 指定字符编码为utf-8
-            hints.put(EncodeHintType.CHARACTER_SET, CHARSET);
-            // 指定二维码的纠错等级为中级
-            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-            // 设置二维码与图片的边距
-            hints.put(EncodeHintType.MARGIN, 2);
-            try {
-                QRCodeWriter writer = new QRCodeWriter();
-                BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, width, height, hints);
-                BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-                for (int x = 0; x < width; x++) {
-                    for (int y = 0; y < height; y++) {
-                        bufferedImage.setRGB(x, y, bitMatrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
-                    }
-                }
-                if (StringUtils.isNotBlank(logoUrl)) {
-                    insertLogo(bufferedImage, width, height, logoUrl, logoWidth, logoHeight);
-                }
-                return bufferedImage;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (content == null || content.isEmpty()) {
+            return null;
         }
-        return null;
+
+        HashMap<EncodeHintType, Comparable> hints = new HashMap<>(4);
+        // 指定字符编码为utf-8
+        hints.put(EncodeHintType.CHARACTER_SET, CHARSET);
+        // 指定二维码的纠错等级为中级
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+        // 设置二维码与图片的边距
+        hints.put(EncodeHintType.MARGIN, MARGIN_SIZE);
+
+
+        try {
+            QRCodeWriter writer = new QRCodeWriter();
+            BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, width, height, hints);
+            BufferedImage qrImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    qrImage.setRGB(x, y, bitMatrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
+                }
+            }
+
+            if (StringUtils.isNotBlank(logoUrl)) {
+                addLogo(qrImage, width, height, logoUrl, logoWidth, logoHeight);
+            }
+
+            return qrImage;
+        } catch (Exception e) {
+            log.error("[生成二维码错误]", e);
+            throw new RuntimeException("[生成二维码错误]", e);
+        }
     }
 
     /**
      * 二维码插入logo
      *
-     * @param source     二维码
+     * @param qrImage     二维码
      * @param width      二维码宽度
      * @param height     二维码高度
      * @param logoUrl    logo 在线地址
@@ -156,14 +165,14 @@ public class QRCodeUtil {
      * @param logoHeight logo 高度
      * @throws Exception
      */
-    private void insertLogo(BufferedImage source, Integer width, Integer height, String logoUrl, Integer logoWidth, Integer logoHeight) throws Exception {
+    private void addLogo(BufferedImage qrImage, Integer width, Integer height, String logoUrl, Integer logoWidth, Integer logoHeight) throws Exception {
         // logo 源可为 File/InputStream/URL
-        Image src = ImageIO.read(new URL(logoUrl));
+        Image logoImage = ImageIO.read(new URL(logoUrl));
         // 插入LOGO
-        Graphics2D graph = source.createGraphics();
+        Graphics2D graph = qrImage.createGraphics();
         int x = (width - logoWidth) / 2;
         int y = (height - logoHeight) / 2;
-        graph.drawImage(src, x, y, logoWidth, logoHeight, null);
+        graph.drawImage(logoImage, x, y, logoWidth, logoHeight, null);
         Shape shape = new RoundRectangle2D.Float(x, y, logoWidth, logoHeight, 6, 6);
         graph.setStroke(new BasicStroke(3f));
         graph.draw(shape);
@@ -179,7 +188,7 @@ public class QRCodeUtil {
      * @throws IOException
      */
     public void getQRCode(String content, OutputStream output) throws IOException {
-        BufferedImage image = crateQRCode(content, WIDTH, HEIGHT, null, null, null);
+        BufferedImage image = crateQRCode(content, DEFAULT_WIDTH, DEFAULT_HEIGHT, null, null, null);
         ImageIO.write(image, IMAGE_FORMAT, output);
     }
 
@@ -192,7 +201,7 @@ public class QRCodeUtil {
      * @throws Exception
      */
     public void getQRCode(String content, String logoUrl, OutputStream output) throws Exception {
-        BufferedImage image = crateQRCode(content, WIDTH, HEIGHT, logoUrl, LOGO_WIDTH, LOGO_HEIGHT);
+        BufferedImage image = crateQRCode(content, DEFAULT_WIDTH, DEFAULT_HEIGHT, logoUrl, DEFAULT_LOGO_WIDTH, DEFAULT_LOGO_HEIGHT);
         ImageIO.write(image, IMAGE_FORMAT, output);
     }
 }
