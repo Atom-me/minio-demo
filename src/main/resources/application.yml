@@ -10,3 +10,12 @@ clamav:
   port: 3310
   readTimeout: 20000
   connectionTimeout: 2000
+
+#spring:
+#  thymeleaf:
+#    prefix: classpath:/templates/
+#    suffix: .html
+#    mode: HTML5
+#    encoding: UTF-8
+#    servlet:
+#      content-type: text/html
