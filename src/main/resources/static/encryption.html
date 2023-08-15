@@ -3,25 +3,45 @@
 <head>
     <title>输入密码</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             text-align: center;
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            padding: 60px 20px; /* 调整上下内边距 */
         }
 
         h1 {
-            margin-top: 100px;
+            font-size: 24px;
+            margin-bottom: 10px;
         }
 
         p {
-            margin-top: 20px;
             font-size: 18px;
+            margin-bottom: 20px;
         }
 
-        input[type="password"] {
+        input[type="password"],
+        button {
             margin-top: 20px;
             padding: 8px;
             font-size: 16px;
+            width: 80%;
+            max-width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="password"]:focus,
+        button:focus {
+            border-color: #4CAF50;
         }
 
         .button-container {
@@ -29,30 +49,20 @@
         }
 
         button {
-            padding: 10px 20px;
-            font-size: 16px;
             background-color: #4CAF50;
             color: #fff;
-            border: none;
             cursor: pointer;
         }
     </style>
 </head>
 <body>
-<h1>输入密码</h1>
-<p>该二维码已被作者加密</p>
-<input type="password" placeholder="请输入密码" id="passwordInput">
-<div class="button-container">
-    <button onclick="verifyPassword()">确定</button>
+<div class="container">
+    <p>该二维码已被作者加密</p>
+    <input type="password" placeholder="请输入访问密码" id="passwordInput">
+    <div class="button-container">
+        <button onclick="verifyPassword()">确定</button>
+    </div>
 </div>
-
-<div>
-    <iframe id="pdfViewer" style="width: 100%; height: 600px;"></iframe>
-</div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
 
 <script>
     function verifyPassword() {
@@ -61,28 +71,9 @@
     }
 
     function callApi(code) {
-        // 使用Axios库发起GET请求
-        axios.get('http://fileshare.v4.idcfengye.com/share/code', {
-            params: {
-                code: code
-            },
-            responseType: 'arraybuffer' // 告诉Axios以二进制数组的形式接收响应数据
-
-        })
-            .then(function (response) {
-                // 将接口返回的二进制数据转换为Blob对象
-                var blob = new Blob([response.data], {type: 'application/pdf'});
-
-                // 将Blob对象的URL设置给iframe的src属性
-                var pdfViewer = document.getElementById('pdfViewer');
-                pdfViewer.src = URL.createObjectURL(blob);
-            })
-            .catch(function (error) {
-                // 请求失败处理
-                alert("调用接口失败！");
-            });
+        var pdfUrl = 'http://fileshare.v4.idcfengye.com/share/code?code=' + code;
+        window.open(pdfUrl, '_blank');
     }
-
 </script>
 </body>
 </html>
