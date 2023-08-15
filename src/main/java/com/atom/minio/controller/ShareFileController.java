@@ -38,6 +38,10 @@ public class ShareFileController {
     @GetMapping("/scan")
     public String scanQRCode(@RequestParam(value = "qrcodeData" ,required = false) String qrcodeData) {
         System.err.println(qrcodeData);
+
+        // parse qrcodeData
+
+
         // todo
         // 1. 支持设置查看地域，可设置指定地域才可查看二维码内容，不在设置地域内扫码无法查看内容。适用于签到登记、现场报名、巡逻检查等应用场景
 
