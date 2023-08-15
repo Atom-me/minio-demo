@@ -29,6 +29,12 @@ public class ShareFileController {
     private static final List<String> CODE_REPOSITORY = Lists.newArrayList("1111", "1234");
 
 
+    /**
+     * 二维码内容 写入本接口信息 http://fileshare.v4.idcfengye.com/share/scan?qrcodeData=encryption
+     *
+     * @param qrcodeData
+     * @return
+     */
     @GetMapping("/scan")
     public String scanQRCode(@RequestParam(value = "qrcodeData" ,required = false) String qrcodeData) {
         System.err.println(qrcodeData);
