@@ -1,5 +1,7 @@
 package com.atom.minio.controller;
 
+import com.atom.minio.config.MinIOProperties;
+import com.atom.minio.dto.FileInfo;
 import io.minio.*;
 import io.minio.errors.ErrorResponseException;
 import io.minio.messages.ErrorResponse;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLConnection;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,8 @@ public class MinioController {
     @Value("${minio.bucketName}")
     private String bucketName;
 
+    @Resource
+    private MinIOProperties minIOProperties;
 
     /**
      * curl --location 'localhost:8080/minio/listObjects'
@@ -41,18 +46,24 @@ public class MinioController {
      * @throws Exception
      */
     @GetMapping("/listObjects")
-    public ResponseEntity<List<Object>> list() throws Exception {
+    public ResponseEntity<List<FileInfo>> list() throws Exception {
         Iterable<Result<Item>> results = minioClient.listObjects(ListObjectsArgs
                 .builder()
                 .bucket(bucketName)
                 .recursive(true)
                 .build());
 
-        List<Object> items = new ArrayList<>();
+        List<FileInfo> items = new ArrayList<>();
         for (Result<Item> result : results) {
             Item item = result.get();
+            FileInfo fileInfo = new FileInfo();
+            fileInfo.setFileName(item.objectName());
+            fileInfo.setFileSize(item.size());
+            fileInfo.setLastModified(LocalDateTime.from(item.lastModified()));
+            fileInfo.setFileUrl(minIOProperties.getEndpoint() + "/" + minIOProperties.getBucketName() + "/" + item.objectName());
+
             LOGGER.info("桶：[{}],  对象名称：[{}], 对象是否是目录：[{}], 对象大小(字节)[{}] ", bucketName, item.objectName(), item.isDir(), item.size());
-            items.add(item.objectName());
+            items.add(fileInfo);
         }
         return ResponseEntity.ok(items);
     }
@@ -65,7 +76,7 @@ public class MinioController {
      * @throws Exception
      */
     @GetMapping("/{object}")
-    public void getObject(@PathVariable("object") String object, HttpServletResponse response) throws Exception {
+    public ResponseEntity<String> downloadObject(@PathVariable("object") String object, HttpServletResponse response) throws Exception {
 
         GetObjectArgs getObjectArgs = GetObjectArgs
                 .builder()
@@ -82,6 +93,7 @@ public class MinioController {
         IOUtils.copy(getObjectResponse, response.getOutputStream());
         response.flushBuffer();
         LOGGER.info("[{}] is successfully downloaded.", object);
+        return ResponseEntity.ok("success");
 
     }
 
@@ -94,8 +106,8 @@ public class MinioController {
      * @param file
      * @throws Exception
      */
-    @PostMapping
-    public void uploadObject(@RequestParam("file111") MultipartFile file) throws Exception {
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadObject(@RequestParam("file111") MultipartFile file) throws Exception {
 
         PutObjectArgs args = PutObjectArgs.builder()
                 .bucket(bucketName)
@@ -108,6 +120,7 @@ public class MinioController {
 
         LOGGER.info("[{}] is successfully uploaded.", file.getOriginalFilename());
 
+        return ResponseEntity.ok("success");
 
     }
 

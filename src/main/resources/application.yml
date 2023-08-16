@@ -10,4 +10,7 @@ clamav:
   port: 3310
   readTimeout: 20000
   connectionTimeout: 2000
-
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10485760
