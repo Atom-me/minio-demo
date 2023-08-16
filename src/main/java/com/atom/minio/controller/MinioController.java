@@ -2,7 +2,6 @@ package com.atom.minio.controller;
 
 import io.minio.*;
 import io.minio.errors.ErrorResponseException;
-import io.minio.errors.MinioException;
 import io.minio.messages.ErrorResponse;
 import io.minio.messages.Item;
 import org.apache.commons.compress.utils.IOUtils;
@@ -16,11 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URLConnection;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,7 +95,7 @@ public class MinioController {
      * @throws Exception
      */
     @PostMapping
-    public void addAttachment(@RequestParam("file111") MultipartFile file) throws Exception {
+    public void uploadObject(@RequestParam("file111") MultipartFile file) throws Exception {
 
         PutObjectArgs args = PutObjectArgs.builder()
                 .bucket(bucketName)
