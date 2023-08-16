@@ -1,0 +1,26 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atom.minio.mapper.QrCodeConfigMapper">
+
+    <insert id="insertQrCodeConfig" parameterType="com.atom.minio.entity.QrCodeConfig" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO qr_code_config (qrcode_id, share_code, scan_start_time, scan_end_time, created_at, updated_at)
+        VALUES (#{qrcodeId}, #{shareCode}, #{scanStartTime}, #{scanEndTime}, #{createdAt}, #{updatedAt})
+    </insert>
+
+
+    <!-- 根据 qrcode_id 查询二维码设置信息 -->
+    <select id="selectByQrCodeId" resultType="com.atom.minio.entity.QrCodeConfig">
+        SELECT id,
+               qrcode_id       as qrcodeId,
+               share_code      as shareCode,
+               scan_start_time as scanStartTime,
+               scan_end_time   as scanEndTime,
+               created_at      as createdAt,
+               updated_at      as updatedAt
+        FROM qr_code_config
+        WHERE qrcode_id = #{qrcodeId}
+    </select>
+
+</mapper>

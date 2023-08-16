@@ -1,4 +1,4 @@
-package com.atom.minio.dto;
+package com.atom.minio.entity;
 
 import java.time.LocalDateTime;
 
@@ -7,21 +7,31 @@ import java.time.LocalDateTime;
  */
 public class FileInfo {
 
+    private Long id;
     private String fileName;
     private Long fileSize;
-
-    private LocalDateTime lastModified;
-
     private String fileUrl;
-
-    public FileInfo(String fileName, Long fileSize, LocalDateTime lastModified, String fileUrl) {
-        this.fileName = fileName;
-        this.fileSize = fileSize;
-        this.lastModified = lastModified;
-        this.fileUrl = fileUrl;
-    }
+    private LocalDateTime lastModified;
+    private LocalDateTime createdAt;
 
     public FileInfo() {
+    }
+
+    public FileInfo(Long id, String fileName, Long fileSize, String fileUrl, LocalDateTime lastModified, LocalDateTime createdAt) {
+        this.id = id;
+        this.fileName = fileName;
+        this.fileSize = fileSize;
+        this.fileUrl = fileUrl;
+        this.lastModified = lastModified;
+        this.createdAt = createdAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFileName() {
@@ -40,14 +50,6 @@ public class FileInfo {
         this.fileSize = fileSize;
     }
 
-    public LocalDateTime getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(LocalDateTime lastModified) {
-        this.lastModified = lastModified;
-    }
-
     public String getFileUrl() {
         return fileUrl;
     }
@@ -56,13 +58,31 @@ public class FileInfo {
         this.fileUrl = fileUrl;
     }
 
+    public LocalDateTime getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(LocalDateTime lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "FileInfo{" +
-                "fileName='" + fileName + '\'' +
+                "id=" + id +
+                ", fileName='" + fileName + '\'' +
                 ", fileSize=" + fileSize +
-                ", lastModified=" + lastModified +
                 ", fileUrl='" + fileUrl + '\'' +
+                ", lastModified=" + lastModified +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

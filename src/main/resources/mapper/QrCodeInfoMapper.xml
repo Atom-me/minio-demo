@@ -1,0 +1,24 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atom.minio.mapper.QrCodeInfoMapper">
+
+
+    <insert id="insertQrCodeInfo" parameterType="com.atom.minio.entity.QrCodeInfo" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO qrcode_info (token, file_id, qr_code_image, generated_at, expires_at)
+        VALUES (#{token}, #{fileId}, #{qrCodeImage}, #{generatedAt}, #{expiresAt})
+    </insert>
+
+
+    <select id="selectByToken" resultType="com.atom.minio.entity.QrCodeInfo">
+        SELECT id,
+               token,
+               file_id       as fileId,
+               qr_code_image as qrCodeImage,
+               generated_at  as generatedAt,
+               expires_at    as expiresAt
+        FROM qrcode_info
+        WHERE token = #{token}
+    </select>
+</mapper>

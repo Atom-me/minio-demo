@@ -55,7 +55,8 @@
         }
     </style>
 </head>
-<body>
+<body onload="handleToken()">
+
 <div class="container">
     <p>该二维码已被作者加密</p>
     <input type="password" placeholder="请输入访问密码" id="passwordInput">
@@ -63,16 +64,35 @@
         <button onclick="verifyPassword()">确定</button>
     </div>
 </div>
+<div id="tokenInfo"></div>
+
 
 <script>
+    var token; // 声明一个全局变量来存储 token
+
     function verifyPassword() {
-        var code = document.getElementById("passwordInput").value;
-        callApi(code);
+        var shareCode = document.getElementById("passwordInput").value;
+        callApi(shareCode,token);
     }
 
-    function callApi(code) {
-        var pdfUrl = 'http://fileshare.v4.idcfengye.com/share/code?code=' + code;
+    function callApi(shareCode,token) {
+        var pdfUrl = 'http://fileshare.v4.idcfengye.com/share/code?shareCode=' + shareCode + '&token=' + token;
         window.open(pdfUrl, '_blank');
+    }
+
+    function handleToken() {
+        var urlParams = new URLSearchParams(window.location.search);
+        token = urlParams.get('token');
+
+        if (token) {
+            // 在这里使用获取到的 token 进行相应的处理
+            console.log('Received token:', token);
+            // 将 token 设置为元素的文本内容
+            var tokenInfoElement = document.getElementById('tokenInfo');
+            tokenInfoElement.textContent = 'Token: ' + token;
+        } else {
+            console.log('No token provided.');
+        }
     }
 </script>
 </body>

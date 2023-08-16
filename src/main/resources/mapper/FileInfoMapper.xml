@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atom.minio.mapper.FileInfoMapper">
+
+    <insert id="insertFileInfo" parameterType="com.atom.minio.entity.FileInfo">
+        INSERT INTO files (file_name, file_size, file_url, last_modified, created_at)
+        VALUES (#{fileName}, #{fileSize}, #{fileUrl}, #{lastModified, javaType=java.time.LocalDateTime, jdbcType=TIMESTAMP}, #{createdAt, javaType=java.time.LocalDateTime, jdbcType=TIMESTAMP})
+    </insert>
+
+    <select id="getAllFiles" resultType="com.atom.minio.entity.FileInfo">
+        SELECT id,
+               file_name     as fileName,
+               file_size     as fileSize,
+               file_url      as fileUrl,
+               last_modified as lastModified,
+               created_at    as createdAt
+        FROM files
+    </select>
+
+    <select id="getFileById" resultType="com.atom.minio.entity.FileInfo">
+        SELECT id,
+               file_name     as fileName,
+               file_size     as fileSize,
+               file_url      as fileUrl,
+               last_modified as lastModified,
+               created_at    as createdAt
+        FROM files
+        WHERE id = #{fileId}
+    </select>
+
+</mapper>

@@ -53,9 +53,14 @@
             border: 1px solid #ddd;
             background-color: #f9f9f9;
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr auto auto auto;
             gap: 10px;
             align-items: center;
+        }
+        .qr-code-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
     </style>
 </head>
@@ -75,33 +80,37 @@
 <script>
     async function fetchFileList() {
         try {
-            const response = await axios.get('http://fileshare.v4.idcfengye.com/minio/listObjects');
+            const response = await axios.get('http://fileshare.v4.idcfengye.com/file/listObjects');
             const data = response.data;
 
             const fileList = document.getElementById('fileList');
             fileList.innerHTML = '';
 
-            data.forEach(fileInfo => {
+            data.forEach(fileInfoResult => {
                 const li = document.createElement('li');
                 li.classList.add('file-list-item');
 
                 const fileName = document.createElement('span');
-                fileName.textContent = fileInfo.fileName;
+                fileName.textContent = fileInfoResult.fileName;
 
                 const lastModified = document.createElement('span');
-                lastModified.textContent = fileInfo.lastModified;
+                lastModified.textContent = fileInfoResult.lastModified;
 
                 const fileSize = document.createElement('span');
-                fileSize.textContent = formatFileSize(fileInfo.fileSize);
+                fileSize.textContent = formatFileSize(fileInfoResult.fileSize);
 
-                const fileUrl = document.createElement('a');
-                fileUrl.href = fileInfo.fileUrl;
-                fileUrl.textContent = 'Download';
+                const fileUrl = document.createElement('span');
+                fileUrl.textContent = fileInfoResult.fileUrl;
+
+                const qrCodeButton = createQRCodeButton(fileInfoResult);
 
                 li.appendChild(fileName);
                 li.appendChild(lastModified);
                 li.appendChild(fileSize);
-                li.appendChild(fileUrl);
+                // li.appendChild(fileUrl);
+                li.appendChild(qrCodeButton);
+
+                fileInfoResult.element = li;
 
                 fileList.appendChild(li);
             });
@@ -120,13 +129,41 @@
         }
     }
 
+    function createQRCodeButton(fileInfoResult) {
+        const qrCodeButton = document.createElement('button');
+        qrCodeButton.textContent = 'Generate QR Code';
+        qrCodeButton.addEventListener('click', async () => {
+            try {
+                const response = await axios.get('http://fileshare.v4.idcfengye.com/file/generateQRCodeBase64', {
+                    params: {
+                        fileId: fileInfoResult.id
+                    }
+                });
+                const qrCodeBase64 = response.data;
+
+                const qrCodeImage = document.createElement('img');
+                qrCodeImage.src = 'data:image/png;base64,' + qrCodeBase64;
+
+                const qrCodeContainer = document.createElement('div');
+                qrCodeContainer.classList.add('qr-code-container');
+                qrCodeContainer.appendChild(qrCodeImage);
+
+                fileInfoResult.element.appendChild(qrCodeContainer);
+            } catch (error) {
+                console.error('Error generating QR code:', error);
+            }
+        });
+
+        return qrCodeButton;
+    }
+
     const uploadForm = document.getElementById('uploadForm');
     uploadForm.addEventListener('submit', async function (event) {
         event.preventDefault();
 
         const formData = new FormData(uploadForm);
         try {
-            const response = await axios.post('http://fileshare.v4.idcfengye.com/minio/upload', formData);
+            const response = await axios.post('http://fileshare.v4.idcfengye.com/file/upload', formData);
             if (response.data === 'success') {
                 fetchFileList(); // Refresh the file list after successful upload
             }

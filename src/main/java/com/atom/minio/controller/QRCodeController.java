@@ -40,6 +40,7 @@ public class QRCodeController {
                             @RequestParam(value = "logoUrl", required = false) String logoUrl,
                             @RequestParam(value = "width", required = false) Integer width,
                             @RequestParam(value = "height", required = false) Integer height) {
+
         return QRCodeUtil.getBase64QRCode(content, logoUrl);
     }
 

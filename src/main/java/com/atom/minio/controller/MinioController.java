@@ -1,7 +1,7 @@
 package com.atom.minio.controller;
 
 import com.atom.minio.config.MinIOProperties;
-import com.atom.minio.dto.FileInfo;
+import com.atom.minio.dto.FileInfoResult;
 import io.minio.*;
 import io.minio.errors.ErrorResponseException;
 import io.minio.messages.ErrorResponse;
@@ -46,24 +46,24 @@ public class MinioController {
      * @throws Exception
      */
     @GetMapping("/listObjects")
-    public ResponseEntity<List<FileInfo>> list() throws Exception {
+    public ResponseEntity<List<FileInfoResult>> list() throws Exception {
         Iterable<Result<Item>> results = minioClient.listObjects(ListObjectsArgs
                 .builder()
                 .bucket(bucketName)
                 .recursive(true)
                 .build());
 
-        List<FileInfo> items = new ArrayList<>();
+        List<FileInfoResult> items = new ArrayList<>();
         for (Result<Item> result : results) {
             Item item = result.get();
-            FileInfo fileInfo = new FileInfo();
-            fileInfo.setFileName(item.objectName());
-            fileInfo.setFileSize(item.size());
-            fileInfo.setLastModified(LocalDateTime.from(item.lastModified()));
-            fileInfo.setFileUrl(minIOProperties.getEndpoint() + "/" + minIOProperties.getBucketName() + "/" + item.objectName());
+            FileInfoResult fileInfoResult = new FileInfoResult();
+            fileInfoResult.setFileName(item.objectName());
+            fileInfoResult.setFileSize(item.size());
+            fileInfoResult.setLastModified(LocalDateTime.from(item.lastModified()));
+            fileInfoResult.setFileUrl(minIOProperties.getEndpoint() + "/" + minIOProperties.getBucketName() + "/" + item.objectName());
 
             LOGGER.info("桶：[{}],  对象名称：[{}], 对象是否是目录：[{}], 对象大小(字节)[{}] ", bucketName, item.objectName(), item.isDir(), item.size());
-            items.add(fileInfo);
+            items.add(fileInfoResult);
         }
         return ResponseEntity.ok(items);
     }
