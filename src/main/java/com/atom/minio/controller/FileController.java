@@ -91,7 +91,7 @@ public class FileController {
             throw new RuntimeException("fileInfo not exists.");
         }
 
-        // 1. 为每个文件生成一个token，用于关联文件和二维码设置信息（qrCodeData）
+        // 1. 为每个二维码生成一个token，用于关联文件和二维码设置信息（qrCodeData）
         String token = RandomStringUtils.random(12, true, true);
 
         // 2. token 随URL写入二维码中
