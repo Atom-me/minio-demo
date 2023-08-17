@@ -13,7 +13,10 @@ import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Controller;
@@ -32,8 +35,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Scanner;
 
 /**
  * @author Atom
@@ -56,6 +60,8 @@ public class ShareFileController {
 
     @Resource
     private MinioClient minioClient;
+    @Resource
+    private ResourceLoader resourceLoader;
 
 
     /**
@@ -100,7 +106,8 @@ public class ShareFileController {
 
         QrCodeConfig qrCodeConfig = qrCodeConfigService.getQrCodeConfigByQrCodeId(qrCodeInfo.getId());
         if (!shareCode.equalsIgnoreCase(qrCodeConfig.getShareCode())) {
-            return ResponseEntity.ok().body("ILLEGAL CODE!");
+
+            return ResponseEntity.ok().body(getPasswordErrorPageContent());
         }
 
         Long fileId = qrCodeInfo.getFileId();
@@ -124,7 +131,9 @@ public class ShareFileController {
         GetObjectResponse getObjectResponse = minioClient.getObject(getObjectArgs);
 
 //        httpServletResponse.setContentType("application/pdf");
-        httpServletResponse.setContentType(URLConnection.guessContentTypeFromName(fileName));
+        String contentType = MediaTypeFactory.getMediaType(fileName)
+                .orElse(MediaType.APPLICATION_OCTET_STREAM).toString();
+        httpServletResponse.setContentType(contentType);
         ServletOutputStream out = httpServletResponse.getOutputStream();
         IOUtils.copy(getObjectResponse, out);
 
@@ -163,4 +172,22 @@ public class ShareFileController {
         byte[] fileBytes = restTemplate.execute(fileUrl, HttpMethod.GET, requestCallback, responseExtractor);
         return fileBytes;
     }
+
+    private String getPasswordErrorPageContent() throws IOException {
+        org.springframework.core.io.Resource resource = resourceLoader.getResource("classpath:/static/password_error.html");
+
+        StringBuilder contentBuilder = new StringBuilder();
+        try (Scanner scanner = new Scanner(resource.getInputStream(), StandardCharsets.UTF_8.name())) {
+            while (scanner.hasNextLine()) {
+                contentBuilder.append(scanner.nextLine());
+            }
+        }
+        return contentBuilder.toString();
+    }
 }
+
+
+
+
+
+
