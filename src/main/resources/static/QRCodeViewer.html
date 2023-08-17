@@ -120,10 +120,11 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="./config.js"></script>
 <script>
     function getQRCodeBase64() {
         var content = document.getElementById("qrcodeBase64Content").value;
-        axios.get("http://localhost:8080/qrcode/getQRCodeBase64?content=" + encodeURIComponent(content))
+        axios.get(apiDomain + "/qrcode/getQRCodeBase64?content=" + encodeURIComponent(content))
             .then(function (response) {
                 var base64 = response.data;
                 document.getElementById("qrcodeBase64Result").src = "data:image/png;base64," + base64;
@@ -135,7 +136,7 @@
 
     function getQRCode() {
         var content = document.getElementById("qrcodeContent").value;
-        axios.get("http://localhost:8080/qrcode/getQRCode?content=" + encodeURIComponent(content) + "&logoUrl=https://img.ixintu.com/download/jpg/201912/c38f5b7290a8c06d7b2ef89717f09432.jpg!con", { responseType: "blob" })
+        axios.get(apiDomain + "/qrcode/getQRCode?content=" + encodeURIComponent(content) + "&logoUrl=https://img.ixintu.com/download/jpg/201912/c38f5b7290a8c06d7b2ef89717f09432.jpg!con", {responseType: "blob"})
             .then(function (response) {
                 var blob = response.data;
                 var url = URL.createObjectURL(blob);
@@ -148,7 +149,7 @@
 
     function generateQRCode() {
         var qrText = document.getElementById("generateQrText").value;
-        axios.get("http://localhost:8080/qrcode/generate-qr?qrText=" + encodeURIComponent(qrText), { responseType: "blob" })
+        axios.get(apiDomain + "/qrcode/generate-qr?qrText=" + encodeURIComponent(qrText), {responseType: "blob"})
             .then(function (response) {
                 var blob = response.data;
                 var url = URL.createObjectURL(blob);

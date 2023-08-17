@@ -26,3 +26,6 @@ mybatis:
   mapper-locations: classpath:/mapper/*.xml
   type-aliases-package: com.atom.minio.entity
 
+# 文件分享，内网穿透地址
+myapp:
+  domain: http://fileshare.v4.idcfengye.com

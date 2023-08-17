@@ -9,6 +9,7 @@ import com.atom.minio.service.QrCodeConfigService;
 import com.atom.minio.service.QrCodeInfoService;
 import com.atom.minio.utils.QRCodeUtil;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,10 @@ public class FileController {
 
     @Resource
     private QrCodeConfigService qrCodeConfigService;
+
+
+    @Value("${myapp.domain}")
+    private String appDomain;
 
 
     /**
@@ -90,7 +95,7 @@ public class FileController {
         String token = RandomStringUtils.random(12, true, true);
 
         // 2. token 随URL写入二维码中
-        String scanUrl = "http://fileshare.v4.idcfengye.com/share/scan?token=";
+        String scanUrl = appDomain + "/share/scan?token=";
         String content = scanUrl + token;
 
         String base64QRCode = QRCodeUtil.getBase64QRCode(content, null);

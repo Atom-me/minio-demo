@@ -11,6 +11,7 @@
             padding: 0;
             background-color: #f7f7f7;
         }
+
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -18,20 +19,25 @@
             background-color: #ffffff;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
+
         h1 {
             color: #333;
         }
+
         form {
             margin-bottom: 20px;
         }
+
         label {
             display: block;
             margin-bottom: 10px;
             font-weight: bold;
         }
+
         input[type="file"] {
             margin-bottom: 10px;
         }
+
         button {
             padding: 8px 16px;
             background-color: #007bff;
@@ -40,13 +46,16 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
         button:hover {
             background-color: #0056b3;
         }
+
         .file-list {
             list-style: none;
             padding: 0;
         }
+
         .file-list-item {
             margin-bottom: 10px;
             padding: 10px;
@@ -57,6 +66,7 @@
             gap: 10px;
             align-items: center;
         }
+
         .qr-code-container {
             display: flex;
             align-items: center;
@@ -76,11 +86,12 @@
     <ul class="file-list" id="fileList"></ul>
 </div>
 
+<script src="./config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     async function fetchFileList() {
         try {
-            const response = await axios.get('http://fileshare.v4.idcfengye.com/file/listObjects');
+            const response = await axios.get(apiDomain + '/file/listObjects');
             const data = response.data;
 
             const fileList = document.getElementById('fileList');
@@ -134,7 +145,7 @@
         qrCodeButton.textContent = 'Generate QR Code';
         qrCodeButton.addEventListener('click', async () => {
             try {
-                const response = await axios.get('http://fileshare.v4.idcfengye.com/file/generateQRCodeBase64', {
+                const response = await axios.get(apiDomain + '/file/generateQRCodeBase64', {
                     params: {
                         fileId: fileInfoResult.id
                     }
@@ -163,7 +174,7 @@
 
         const formData = new FormData(uploadForm);
         try {
-            const response = await axios.post('http://fileshare.v4.idcfengye.com/file/upload', formData);
+            const response = await axios.post(apiDomain + '/file/upload', formData);
             if (response.data === 'success') {
                 fetchFileList(); // Refresh the file list after successful upload
                 alert('File uploaded successfully.');

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
+    <meta charset="UTF-8">
     <title>Virus Scan</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -80,13 +80,15 @@
             color: #dc3545; /* Red color */
         }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="./config.js"></script>
     <script>
         $(document).ready(function () {
             $("#file-upload-form").on("submit", function (e) {
                 e.preventDefault();
 
                 $.ajax({
-                    url: "/av/upload",
+                    url: apiDomain + "/av/upload",
                     type: "POST",
                     data: new FormData(this),
                     enctype: 'multipart/form-data',
@@ -102,17 +104,17 @@
                 });
             });
 
-            function showResult(res){
+            function showResult(res) {
                 $("#result-ok").html("");
                 $("#result-error").html("");
 
-                if(res.status == "PASSED"){
+                if (res.status == "PASSED") {
                     $("#result-ok").html("<h2>No threats found.</h2>");
 
                 } else if (res.status == "FAILED") {
-                    $("#result-error").html("<h2>Virus found.</h2><h3>Detected: <b>"+ res.signature + "</b></h3>");
+                    $("#result-error").html("<h2>Virus found.</h2><h3>Detected: <b>" + res.signature + "</b></h3>");
                 } else {
-                    $("#result-error").html("<h3>Something went wrong.</h3><h3>Message: <b>"+ res.result + "</b></h3>");
+                    $("#result-error").html("<h3>Something went wrong.</h3><h3>Message: <b>" + res.result + "</b></h3>");
                 }
             }
         });

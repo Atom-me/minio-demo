@@ -65,6 +65,7 @@
     </div>
 </div>
 <div id="tokenInfo"></div>
+<script src="./config.js"></script>
 
 
 <script>
@@ -76,7 +77,7 @@
     }
 
     function callApi(shareCode, token) {
-        var pdfUrl = 'http://fileshare.v4.idcfengye.com/share/code?shareCode=' + shareCode + '&token=' + token;
+        var pdfUrl = apiDomain + '/share/code?shareCode=' + shareCode + '&token=' + token;
         window.open(pdfUrl, '_blank');
     }
 
