@@ -40,6 +40,8 @@ import java.time.LocalDateTime;
 import java.util.Scanner;
 
 /**
+ * 二维码分享文件
+ *
  * @author Atom
  */
 @Controller
