@@ -6,6 +6,7 @@ import com.atom.minio.entity.QrCodeInfo;
 import com.atom.minio.service.FileService;
 import com.atom.minio.service.QrCodeConfigService;
 import com.atom.minio.service.QrCodeInfoService;
+import com.atom.minio.utils.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -56,15 +57,11 @@ public class ShareFileController {
      */
     @GetMapping("/scan")
     public String scanQRCode(@RequestParam(value = "token", required = false) String token) {
-        System.err.println(token);
-
-        String redirectUrl = "redirect:/null.html";
-
         // parse token
         QrCodeInfo qrCodeInfo = qrCodeInfoService.getQrCodeInfoByToken(token);
         LocalDateTime expiresAt = qrCodeInfo.getExpiresAt();
         if (LocalDateTime.now().isAfter(expiresAt)) {
-            redirectUrl = "redirect:/expired.html";
+            return "redirect:/expired.html?expiredAt=" + DateUtil.format(expiresAt);
         }
 
         // todo
@@ -75,9 +72,9 @@ public class ShareFileController {
         // 3. 活码支持加密功能，可设置密码，扫码后输入密码显示二维码内容。适用于文件传阅、教学资料等应用场景
         QrCodeConfig qrCodeConfig = qrCodeConfigService.getQrCodeConfigByQrCodeId(qrCodeInfo.getId());
         if (StringUtils.isNotBlank(qrCodeConfig.getShareCode())) {
-            redirectUrl = "redirect:/encryption.html?token=" + token;
+            return "redirect:/encryption.html?token=" + token;
         }
-        return redirectUrl;
+        return "redirect:/null.html";
 
     }
 
@@ -88,7 +85,6 @@ public class ShareFileController {
         System.err.println(shareCode);
         System.err.println(token);
         QrCodeInfo qrCodeInfo = qrCodeInfoService.getQrCodeInfoByToken(token);
-
 
         QrCodeConfig qrCodeConfig = qrCodeConfigService.getQrCodeConfigByQrCodeId(qrCodeInfo.getId());
         if (!shareCode.equalsIgnoreCase(qrCodeConfig.getShareCode())) {

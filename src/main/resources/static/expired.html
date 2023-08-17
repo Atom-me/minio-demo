@@ -9,24 +9,55 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f7f7f7;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: flex-start;
             align-items: center;
             height: 100vh;
+            background: linear-gradient(180deg, #f7f7f7, #ffffff);
         }
+
         .message {
             text-align: center;
             padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            background-color: transparent;
+            box-shadow: none;
+            margin-top: 20vh;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #888;
+            margin: 0;
+            margin-top: 5px;
         }
     </style>
 </head>
-<body>
+<body onload="handleExpiredAt()">
+
 <div class="message">
     <h1>二维码查看有效期已到期</h1>
-    <p>很抱歉，该二维码的有效期已到期，无法继续查看相关内容。</p>
+    <p id="expiredAtText"></p>
 </div>
+
+<script>
+    function handleExpiredAt() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var expiredAt = urlParams.get('expiredAt');
+
+        if (expiredAt) {
+            var expiredAtText = document.getElementById('expiredAtText');
+            expiredAtText.innerHTML = '该二维码设置有效期截止' + expiredAt;
+        }
+    }
+</script>
+
 </body>
 </html>

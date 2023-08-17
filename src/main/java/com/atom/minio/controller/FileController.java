@@ -102,7 +102,7 @@ public class FileController {
         qrCodeInfo.setFileId(fileInfo.getId());
         qrCodeInfo.setQrCodeImage(base64QRCode);
         qrCodeInfo.setGeneratedAt(LocalDateTime.now());
-        LocalDateTime expireAt = LocalDateTime.of(2029, 8, 12, 23, 59, 59);
+        LocalDateTime expireAt = LocalDateTime.of(2023, 8, 16, 23, 59, 59);
         qrCodeInfo.setExpiresAt(expireAt);
         Long qrCodeId = qrCodeInfoService.insertQrCodeInfo(qrCodeInfo);
 

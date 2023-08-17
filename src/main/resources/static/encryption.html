@@ -72,10 +72,10 @@
 
     function verifyPassword() {
         var shareCode = document.getElementById("passwordInput").value;
-        callApi(shareCode,token);
+        callApi(shareCode, token);
     }
 
-    function callApi(shareCode,token) {
+    function callApi(shareCode, token) {
         var pdfUrl = 'http://fileshare.v4.idcfengye.com/share/code?shareCode=' + shareCode + '&token=' + token;
         window.open(pdfUrl, '_blank');
     }
@@ -84,10 +84,8 @@
         var urlParams = new URLSearchParams(window.location.search);
         token = urlParams.get('token');
 
+        // todo for debug
         if (token) {
-            // 在这里使用获取到的 token 进行相应的处理
-            console.log('Received token:', token);
-            // 将 token 设置为元素的文本内容
             var tokenInfoElement = document.getElementById('tokenInfo');
             tokenInfoElement.textContent = 'Token: ' + token;
         } else {
