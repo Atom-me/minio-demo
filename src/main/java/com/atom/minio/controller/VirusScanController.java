@@ -26,8 +26,8 @@ public class VirusScanController {
     private VirusScanService virusScanService;
 
 
-    @PostMapping("/upload")
-    public ResponseEntity<VirusScanResult> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/scan")
+    public ResponseEntity<VirusScanResult> scan(@RequestParam("file") MultipartFile file) {
         VirusScanResult virusScanResult = virusScanService.virusScan(file);
         return ResponseEntity.ok(virusScanResult);
     }
