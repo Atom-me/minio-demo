@@ -166,9 +166,13 @@
             const response = await axios.post('http://fileshare.v4.idcfengye.com/file/upload', formData);
             if (response.data === 'success') {
                 fetchFileList(); // Refresh the file list after successful upload
+                alert('File uploaded successfully.');
+            } else {
+                alert('File upload failed. Please try again.');
             }
         } catch (error) {
             console.error('Error uploading file:', error);
+            alert('An error occurred while uploading the file.');
         }
     });
 

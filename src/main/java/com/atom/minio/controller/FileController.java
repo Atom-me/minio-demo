@@ -4,12 +4,12 @@ import com.atom.minio.dto.FileInfoResult;
 import com.atom.minio.entity.FileInfo;
 import com.atom.minio.entity.QrCodeConfig;
 import com.atom.minio.entity.QrCodeInfo;
-import com.atom.minio.service.FileQrCodeRelationService;
 import com.atom.minio.service.FileService;
 import com.atom.minio.service.QrCodeConfigService;
 import com.atom.minio.service.QrCodeInfoService;
 import com.atom.minio.utils.QRCodeUtil;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,9 +30,6 @@ public class FileController {
     @Resource
     private FileService fileService;
     @Resource
-    private FileQrCodeRelationService fileQrCodeRelationService;
-
-    @Resource
     private QrCodeInfoService qrCodeInfoService;
 
     @Resource
@@ -48,10 +45,13 @@ public class FileController {
      */
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file111") MultipartFile file) throws Exception {
+        if (Objects.isNull(file)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("文件呢？");
+        }
 
         fileService.saveFileInfo(file);
 
-        return ResponseEntity.ok("File uploaded and info saved successfully");
+        return ResponseEntity.ok("success");
     }
 
 
@@ -80,8 +80,6 @@ public class FileController {
      */
     @GetMapping("/generateQRCodeBase64")
     public String generateQRCodeBase64(@RequestParam("fileId") Long fileId) {
-        System.err.println(fileId);
-
         FileInfo fileInfo = fileService.getFileById(fileId);
         if (Objects.isNull(fileInfo)) {
             // todo
@@ -102,18 +100,9 @@ public class FileController {
         qrCodeInfo.setFileId(fileInfo.getId());
         qrCodeInfo.setQrCodeImage(base64QRCode);
         qrCodeInfo.setGeneratedAt(LocalDateTime.now());
-        LocalDateTime expireAt = LocalDateTime.of(2023, 8, 16, 23, 59, 59);
+        LocalDateTime expireAt = LocalDateTime.of(2024, 8, 16, 23, 59, 59);
         qrCodeInfo.setExpiresAt(expireAt);
         Long qrCodeId = qrCodeInfoService.insertQrCodeInfo(qrCodeInfo);
-
-
-//        FileQrCodeRelation fileQrCodeRelation = new FileQrCodeRelation();
-//        fileQrCodeRelation.setFileId(fileInfo.getId());
-//        fileQrCodeRelation.setQrCodeId(qrCodeId);
-//        fileQrCodeRelation.setToken(token);
-//        fileQrCodeRelation.setCreatedAt(LocalDateTime.now());
-//        fileQrCodeRelationService.insertFileQrCodeRelation(fileQrCodeRelation);
-
 
         // 用户对各个文件二维码做单独设置（是否需要分享码，是否有地理位置限制，是否有扫码时间段限制）
         LocalDateTime startTime = LocalDateTime.of(2023, 8, 1, 0, 0, 0);

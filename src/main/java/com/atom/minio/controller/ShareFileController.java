@@ -1,5 +1,6 @@
 package com.atom.minio.controller;
 
+import com.atom.minio.config.MinIOProperties;
 import com.atom.minio.entity.FileInfo;
 import com.atom.minio.entity.QrCodeConfig;
 import com.atom.minio.entity.QrCodeInfo;
@@ -7,6 +8,10 @@ import com.atom.minio.service.FileService;
 import com.atom.minio.service.QrCodeConfigService;
 import com.atom.minio.service.QrCodeInfoService;
 import com.atom.minio.utils.DateUtil;
+import io.minio.GetObjectArgs;
+import io.minio.GetObjectResponse;
+import io.minio.MinioClient;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.time.LocalDateTime;
 
 /**
@@ -44,6 +50,12 @@ public class ShareFileController {
 
     @Resource
     private FileService fileService;
+
+    @Resource
+    private MinIOProperties minIOProperties;
+
+    @Resource
+    private MinioClient minioClient;
 
 
     /**
@@ -81,7 +93,7 @@ public class ShareFileController {
 
     @GetMapping("/code")
     @ResponseBody
-    public ResponseEntity<String> accessQRCode(@RequestParam("shareCode") String shareCode, @RequestParam("token") String token, HttpServletResponse httpServletResponse) throws IOException {
+    public ResponseEntity<String> accessQRCode(@RequestParam("shareCode") String shareCode, @RequestParam("token") String token, HttpServletResponse httpServletResponse) throws Exception {
         System.err.println(shareCode);
         System.err.println(token);
         QrCodeInfo qrCodeInfo = qrCodeInfoService.getQrCodeInfoByToken(token);
@@ -96,15 +108,27 @@ public class ShareFileController {
         String fileName = fileInfo.getFileName();
 
         // todo 根据fileName 去minio拿文件的stream信息，下载
+/*
 
-        // 验证二维码是否有效和访问权限是否满足要求
         String fileUrl = getFileUrlFromCode(shareCode);
-
-        // 获取阿里云 OSS 中的文件内容
         byte[] fileBytesFromOSS = getFileBytesFromOSS(fileUrl);
-        httpServletResponse.setContentType("application/pdf");
+
+*/
+
+
+        GetObjectArgs getObjectArgs = GetObjectArgs
+                .builder()
+                .bucket(minIOProperties.getBucketName())
+                .object(fileName)
+                .build();
+        GetObjectResponse getObjectResponse = minioClient.getObject(getObjectArgs);
+
+//        httpServletResponse.setContentType("application/pdf");
+        httpServletResponse.setContentType(URLConnection.guessContentTypeFromName(fileName));
         ServletOutputStream out = httpServletResponse.getOutputStream();
-        out.write(fileBytesFromOSS);
+        IOUtils.copy(getObjectResponse, out);
+
+//        out.write(fileBytesFromOSS);
         out.flush();
         out.close();
         return ResponseEntity.ok().body("ok ");
